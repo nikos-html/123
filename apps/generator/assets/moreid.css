@@ -3,12 +3,12 @@
     z-index: 1;
     background-color: var(--background);
     position: fixed;
-    top: -10px;
-    height: 60px;
+    top: 0;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 10px);
+    height: calc(60px + env(safe-area-inset-top, 0px));
     left: 0;
     width: 100%;
     display: grid;
-    margin-top: 10px;
     grid-template-columns: repeat(3, calc(100% / 3));
 }
 
