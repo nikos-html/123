@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MambaGenerator - Profesjonalne rozwiązania cyfrowe</title>
+    <title>SecureDoc - Profesjonalne rozwiązania cyfrowe</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -106,15 +106,40 @@
         .logo-icon {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             color: white;
-            box-shadow: var(--glow-purple);
+            box-shadow: var(--glow-cyan);
+            position: relative;
+        }
+        
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 22px;
+            border: 3px solid white;
+            border-radius: 3px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background: white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 0 white, 0 -4px 0 white;
         }
 
         .logo-text {
