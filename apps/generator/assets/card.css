@@ -311,17 +311,18 @@ body .bottom_bar{
     background-color: var(--background);
     position: fixed;
     top: 0;
-    padding-top: calc(env(safe-area-inset-top, 0px) + 10px);
-    height: calc(60px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(50px + env(safe-area-inset-top, 0px));
     left: 0;
     width: 100%;
     display: grid;
     grid-template-columns: repeat(3, calc(100% / 3));
+    align-items: center;
 }
 
 .time_text{
-    margin-top: 60px;
-    margin-bottom: 20px;
+    margin-top: calc(55px + env(safe-area-inset-top, 0px));
+    margin-bottom: 15px;
     color: #949ba2;
     margin-left: auto;
     margin-right: auto;
