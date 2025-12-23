@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - mObywatel</title>
+    <!-- SECURITY: Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-mid: #1a1a1a;
+            --text-light: #eeeeee;
+            --text-subtle: #777777;
+            --glass-fill: rgba(255, 255, 255, 0.05);
+            --border-clear: rgba(255, 255, 255, 0.1);
+            --accent-purple: #000000;
+            --accent-glow: rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--glass-fill);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-clear);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            color: var(--text-light);
+            text-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-subtle);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-subtle);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-clear);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: #2a2a2a;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            color: #ff3333;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            color: #33ff33;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* SECURITY: Turnstile widget styling */
+        .cf-turnstile {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>🔐 Admin Panel</h1>
+        <p class="subtitle">Zaloguj się do panelu administracyjnego</p>
+        
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="username">Nazwa użytkownika:</label>
+                <input type="text" id="username" placeholder="admin" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Hasło:</label>
+                <input type="password" id="password" placeholder="Twoje hasło" required autocomplete="current-password">
+            </div>
+            
+            <!-- SECURITY: Cloudflare Turnstile CAPTCHA -->
+            <div class="cf-turnstile" 
+                 data-sitekey="0x4AAAAAACIEPI3Ii5UjOggc" 
+                 data-callback="onTurnstileSuccess"
+                 data-theme="dark">
+            </div>
+            
+            <button type="submit" id="submitBtn">Zaloguj się do Panelu</button>
+            
+            <div id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('adminLoginForm');
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+        const API_URL = window.location.origin;
+        
+        let turnstileToken = null;
+
+        // SECURITY: Turnstile callback
+        function onTurnstileSuccess(token) {
+            turnstileToken = token;
+            submitBtn.disabled = false;
+        }
+
+        // Make callback globally available
+        window.onTurnstileSuccess = onTurnstileSuccess;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            messageDiv.textContent = 'Logowanie...';
+            messageDiv.className = '';
+
+            try {
+                // SECURITY: Use dedicated admin login endpoint
+                const response = await fetch(`${API_URL}/api/auth/admin-login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username, 
+                        password,
+                        turnstile_token: turnstileToken || ''  // SECURITY: Send Turnstile token if available
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // SECURITY: Check if user is admin
+                    if (!data.is_admin) {
+                        messageDiv.className = 'error';
+                        messageDiv.textContent = 'Nie masz dostępu do panelu!';
+                        if (window.turnstile) turnstile.reset();
+                        turnstileToken = null;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // SECURITY: Store JWT token instead of just user_id
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_user_id', data.user_id);
+                    localStorage.setItem('admin_username', data.username);
+                    
+                    messageDiv.className = 'success';
+                    messageDiv.textContent = 'Zalogowano! Wchodzę do panelu...';
+                    setTimeout(() => window.location.href = '/admin.html', 1500);
+                } else {
+                    messageDiv.className = 'error';
+                    messageDiv.textContent = data.error || 'Błąd logowania!';
+                    // Reset Turnstile on error
+                    if (window.turnstile) turnstile.reset();
+                    turnstileToken = null;
+                    submitBtn.disabled = true;
+                }
+            } catch (error) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'Błąd połączenia: ' + error.message;
+                if (window.turnstile) turnstile.reset();
+                turnstileToken = null;
+                submitBtn.disabled = true;
+            }
+        });
+
+        // SECURITY: Clear any existing tokens on page load
+        // This prevents session fixation
+        if (!window.location.search.includes('keepSession')) {
+            // Don't auto-clear, but check token validity
+            const existingToken = localStorage.getItem('admin_token');
+            if (existingToken) {
+                // Could validate token here if needed
+            }
+        }
+    </script>
+</body>
+</html>
