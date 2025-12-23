@@ -337,6 +337,83 @@
             margin-top: 5px;
         }
 
+        /* Preview Section */
+        .preview {
+            padding: 80px 40px;
+            position: relative;
+        }
+
+        .preview-container {
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .phone-frame {
+            background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+            border-radius: 45px;
+            padding: 12px;
+            box-shadow: 
+                0 50px 100px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 0 60px rgba(168, 85, 247, 0.2);
+            position: relative;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 28px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            background: #000;
+            border-radius: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .phone-screen video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 35px;
+        }
+
+        .preview-badge {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            box-shadow: var(--glow-purple);
+        }
+
+        .preview-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+        }
+
         /* Features Section */
         .features {
             padding: 100px 40px;
