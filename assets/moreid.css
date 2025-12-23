@@ -4,12 +4,13 @@
     background-color: var(--background);
     position: fixed;
     top: 0;
-    padding-top: calc(env(safe-area-inset-top, 0px) + 10px);
-    height: calc(60px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(50px + env(safe-area-inset-top, 0px));
     left: 0;
     width: 100%;
     display: grid;
     grid-template-columns: repeat(3, calc(100% / 3));
+    align-items: center;
 }
 
 .action_grid{
@@ -63,7 +64,7 @@
     border-radius: 19px;
     padding: 20px 23px;
     width: 95%;
-    margin-top: calc(80px + env(safe-area-inset-top, 0px));
+    margin-top: calc(60px + env(safe-area-inset-top, 0px));
     box-shadow: var(--shadow);
     box-sizing: border-box;
     height: auto;
