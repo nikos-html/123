@@ -1152,6 +1152,8 @@ def get_codes():
     try:
         # Optional filter by type
         code_type = request.args.get('type')
+        # Optional include expired (default: false for downloads)
+        include_expired = request.args.get('include_expired', 'false').lower() == 'true'
         
         conn = get_db()
         cur = conn.cursor(row_factory=dict_row)
@@ -1169,7 +1171,11 @@ def get_codes():
         now = datetime.utcnow()
         for code in codes:
             expires_at = code.get('expires_at')
-            is_expired = expires_at and expires_at < now if expires_at else False
+            is_expired = (expires_at < now) if expires_at else False
+            
+            # Skip expired codes unless explicitly requested
+            if is_expired and not include_expired:
+                continue
             
             codes_list.append({
                 'id': code['id'],
