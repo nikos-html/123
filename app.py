@@ -1207,6 +1207,26 @@ def clear_codes():
         logger.error(f"Clear codes error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/api/admin/delete-expired-codes', methods=['DELETE'])
+@require_admin
+def delete_expired_codes():
+    """SECURITY: Admin-only endpoint to delete expired codes"""
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        now = datetime.utcnow()
+        cur.execute('DELETE FROM one_time_codes WHERE expires_at IS NOT NULL AND expires_at < %s', (now,))
+        deleted_count = cur.rowcount
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logger.info(f"SECURITY: Admin deleted {deleted_count} expired access codes")
+        return jsonify({'message': f'Usunięto {deleted_count} wygasłych kodów'}), 200
+    except Exception as e:
+        logger.error(f"Delete expired codes error: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 # =============================================================================
 # SECURITY: Webhook - with proper secret verification
 # =============================================================================

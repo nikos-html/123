@@ -719,6 +719,7 @@
                     <button class="filter-btn active" onclick="filterCodes('all', this)">Wszystkie</button>
                     <button class="filter-btn" onclick="filterCodes('single', this)">🎫 Single</button>
                     <button class="filter-btn" onclick="filterCodes('pack', this)">📦 Pack</button>
+                    <button class="btn btn-danger btn-sm" style="margin-left: auto;" onclick="deleteExpiredCodes()">🗑️ Usuń wygasłe kody</button>
                 </div>
 
                 <div class="table-container">
@@ -1270,6 +1271,29 @@
                     element.click();
                     document.body.removeChild(element);
                     alert(`✅ Pobrano ${unusedCodes.length} kodów ${codeType.toUpperCase()}`);
+                }
+            } catch (error) {
+                alert('❌ ' + error.message);
+            }
+        }
+
+        async function deleteExpiredCodes() {
+            if (!confirm('Czy na pewno chcesz usunąć WSZYSTKIE wygasłe kody? Tej akcji nie można cofnąć!')) return;
+
+            try {
+                const response = await authFetch(`${API_URL}/api/admin/delete-expired-codes`, {
+                    method: 'DELETE'
+                });
+
+                if (!response) return;
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert(`✅ ${data.message}`);
+                    loadCodes();
+                    loadStats();
+                } else {
+                    alert(`❌ ${data.error || 'Błąd usuwania'}`);
                 }
             } catch (error) {
                 alert('❌ ' + error.message);
