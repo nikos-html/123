@@ -56,12 +56,8 @@ JWT_EXPIRATION_HOURS = 24
 TURNSTILE_SECRET_KEY = os.environ.get('TURNSTILE_SECRET_KEY', '0x4AAAAAACIETFZW2JFN4TewZskRq48ujK4')
 TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
-# SECURITY: Allowed origins for CORS
-ALLOWED_ORIGINS = [
-    'https://mambagenerator.up.railway.app',
-    'http://localhost:5000',
-    'http://127.0.0.1:5000'
-]
+# SECURITY: Allowed origins for CORS - Allow all for Replit preview
+ALLOWED_ORIGINS = "*"
 
 # SECURITY: Admin IP allowlist (optional - set in env)
 ADMIN_IP_ALLOWLIST = os.environ.get('ADMIN_IP_ALLOWLIST', '').split(',')
@@ -85,8 +81,8 @@ logger = logging.getLogger('security')
 # =============================================================================
 app = Flask(__name__, static_folder='.', static_url_path='')
 
-# SECURITY: Strict CORS - only allowed origins
-CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=True)
+# CORS - Allow all origins for Replit preview
+CORS(app, origins="*", supports_credentials=True)
 
 # SECURITY: Rate limiting
 def get_client_identifier():
@@ -122,8 +118,8 @@ def security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     # SECURITY: XSS protection
     response.headers['X-XSS-Protection'] = '1; mode=block'
-    # SECURITY: Prevent clickjacking
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    # Allow Replit preview iframe
+    # response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     # SECURITY: Strict transport security
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     # SECURITY: Content security policy
