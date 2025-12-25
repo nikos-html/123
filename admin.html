@@ -1311,9 +1311,10 @@
 
         async function loadCodes() {
             try {
-                let url = `${API_URL}/api/admin/codes`;
+                // Include expired codes in table view to show admin all codes
+                let url = `${API_URL}/api/admin/codes?include_expired=true`;
                 if (currentFilter !== 'all') {
-                    url += `?type=${currentFilter}`;
+                    url += `&type=${currentFilter}`;
                 }
                 
                 const response = await authFetch(url);
@@ -1325,9 +1326,6 @@
                     tbody.innerHTML = '';
                     
                     data.codes.forEach(code => {
-                        // Pomiń wygasłe kody - nie wyświetlaj ich
-                        if (code.expired) return;
-                        
                         const row = tbody.insertRow();
                         row.insertCell(0).innerHTML = `<span class="code-display">${code.code}</span>`;
                         
@@ -1337,7 +1335,9 @@
                         row.insertCell(1).innerHTML = typeBadge;
                         
                         let statusBadge = '';
-                        if (code.used) {
+                        if (code.expired) {
+                            statusBadge = '<span class="badge badge-danger">⏰ Wygasły</span>';
+                        } else if (code.used) {
                             statusBadge = '<span class="badge badge-success">✅ Użyty</span>';
                         } else {
                             statusBadge = '<span class="badge badge-blue">🟢 Dostępny</span>';
