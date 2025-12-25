@@ -1301,6 +1301,9 @@
                     tbody.innerHTML = '';
                     
                     data.codes.forEach(code => {
+                        // Pomiń wygasłe kody - nie wyświetlaj ich
+                        if (code.expired) return;
+                        
                         const row = tbody.insertRow();
                         row.insertCell(0).innerHTML = `<span class="code-display">${code.code}</span>`;
                         
@@ -1312,8 +1315,6 @@
                         let statusBadge = '';
                         if (code.used) {
                             statusBadge = '<span class="badge badge-success">✅ Użyty</span>';
-                        } else if (code.expired) {
-                            statusBadge = '<span class="badge badge-warning">⚠️ Wygasł</span>';
                         } else {
                             statusBadge = '<span class="badge badge-blue">🟢 Dostępny</span>';
                         }
