@@ -223,6 +223,25 @@ def clear_codes():
     conn.close()
     return jsonify({'message': f'Deleted {n} codes'}), 200
 
+@app.route('/api/admin/delete-expired-codes', methods=['DELETE'])
+@require_admin
+def delete_expired_codes():
+    """Usuń wszystkie wygasłe kody"""
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        now = datetime.utcnow()
+        cur.execute('DELETE FROM one_time_codes WHERE expires_at IS NOT NULL AND expires_at < %s', (now,))
+        deleted_count = cur.rowcount
+        conn.commit()
+        cur.close()
+        conn.close()
+        logger.info(f"Admin deleted {deleted_count} expired codes")
+        return jsonify({'message': f'Usunięto {deleted_count} wygasłych kodów'}), 200
+    except Exception as e:
+        logger.error(f"Delete expired codes error: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 init_db()
 
 if __name__ == '__main__':
