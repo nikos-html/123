@@ -179,11 +179,34 @@ def gen_codes():
 @app.route('/api/admin/codes', methods=['GET'])
 @require_admin
 def get_codes():
+    # Parametr do włączenia/wyłączenia wygasłych kodów
+    include_expired = request.args.get('include_expired', 'true').lower() == 'true'
+    code_type = request.args.get('type')
+    
     conn = get_db()
     cur = conn.cursor(row_factory=dict_row)
-    cur.execute('SELECT * FROM one_time_codes ORDER BY created_at DESC')
+    
+    if code_type:
+        cur.execute('SELECT * FROM one_time_codes WHERE code_type = %s ORDER BY created_at DESC', (code_type,))
+    else:
+        cur.execute('SELECT * FROM one_time_codes ORDER BY created_at DESC')
+    
     now = datetime.utcnow()
-    codes = [{'id': c['id'], 'code': c['code'], 'used': c['used'], 'expired': c['expires_at'] and c['expires_at'] < now, 'code_type': c.get('code_type', 'single'), 'created_at': c['created_at'].isoformat() if c['created_at'] else None, 'expires_at': c['expires_at'].isoformat() if c['expires_at'] else None} for c in cur.fetchall()]
+    codes = []
+    for c in cur.fetchall():
+        is_expired = c['expires_at'] and c['expires_at'] < now
+        # Pomijaj wygasłe kody jeśli include_expired=false (dla pobierania)
+        if is_expired and not include_expired:
+            continue
+        codes.append({
+            'id': c['id'],
+            'code': c['code'],
+            'used': c['used'],
+            'expired': is_expired,
+            'code_type': c.get('code_type', 'single'),
+            'created_at': c['created_at'].isoformat() if c['created_at'] else None,
+            'expires_at': c['expires_at'].isoformat() if c['expires_at'] else None
+        })
     cur.close()
     conn.close()
     return jsonify({'codes': codes}), 200
