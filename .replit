@@ -1,4 +1,4 @@
-modules = ["web", "python-3.11", "nodejs-20"]
+modules = ["web", "python-3.11", "nodejs-20", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -37,3 +37,9 @@ externalPort = 80
 [deployment]
 deploymentTarget = "autoscale"
 run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "app:app"]
+
+[userenv]
+
+[userenv.shared]
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin123"
