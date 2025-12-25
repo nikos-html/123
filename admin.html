@@ -1240,12 +1240,14 @@
 
         async function downloadCodes(codeType) {
             try {
+                // DON'T include expired codes when downloading (exclude_expired is default)
                 const response = await authFetch(`${API_URL}/api/admin/codes?type=${codeType}`);
                 if (!response) return;
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const unusedCodes = data.codes.filter(c => !c.used && !c.expired).map(c => c.code);
+                    // Backend already filters expired codes, but double-check
+                    const unusedCodes = data.codes.filter(c => !c.used).map(c => c.code);
                     
                     if (unusedCodes.length === 0) {
                         alert(`Brak dostępnych kodów ${codeType.toUpperCase()}!`);
@@ -1270,7 +1272,7 @@
                     document.body.appendChild(element);
                     element.click();
                     document.body.removeChild(element);
-                    alert(`✅ Pobrano ${unusedCodes.length} kodów ${codeType.toUpperCase()}`);
+                    alert(`✅ Pobrano ${unusedCodes.length} kodów ${codeType.toUpperCase()} (bez wygasłych)`);
                 }
             } catch (error) {
                 alert('❌ ' + error.message);
