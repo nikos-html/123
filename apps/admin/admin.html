@@ -1246,12 +1246,13 @@
 
         async function downloadCodes(codeType) {
             try {
-                const response = await authFetch(`${API_URL}/api/admin/codes?type=${codeType}`);
+                // Pobierz bez wygasłych kodów (include_expired=false)
+                const response = await authFetch(`${API_URL}/api/admin/codes?type=${codeType}&include_expired=false`);
                 if (!response) return;
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const unusedCodes = data.codes.filter(c => !c.used && !c.expired).map(c => c.code);
+                    const unusedCodes = data.codes.filter(c => !c.used).map(c => c.code);
                     
                     if (unusedCodes.length === 0) {
                         alert(`Brak dostępnych kodów ${codeType.toUpperCase()}!`);
@@ -1276,7 +1277,30 @@
                     document.body.appendChild(element);
                     element.click();
                     document.body.removeChild(element);
-                    alert(`✅ Pobrano ${unusedCodes.length} kodów ${codeType.toUpperCase()}`);
+                    alert(`✅ Pobrano ${unusedCodes.length} kodów ${codeType.toUpperCase()} (bez wygasłych)`);
+                }
+            } catch (error) {
+                alert('❌ ' + error.message);
+            }
+        }
+
+        async function deleteExpiredCodes() {
+            if (!confirm('Czy na pewno chcesz usunąć WSZYSTKIE wygasłe kody? Tej akcji nie można cofnąć!')) return;
+
+            try {
+                const response = await authFetch(`${API_URL}/api/admin/delete-expired-codes`, {
+                    method: 'DELETE'
+                });
+
+                if (!response) return;
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert(`✅ ${data.message}`);
+                    loadCodes();
+                    loadStats();
+                } else {
+                    alert(`❌ ${data.error || 'Błąd usuwania'}`);
                 }
             } catch (error) {
                 alert('❌ ' + error.message);
