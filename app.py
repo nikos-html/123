@@ -507,6 +507,45 @@ def admin_page():
     return serve_html('admin.html')
 
 # =============================================================================
+# Static File Routes for different folders
+# =============================================================================
+
+@app.route('/more_files/<path:filename>')
+def serve_more_files(filename):
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'more_files'), filename)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@app.route('/services_files/<path:filename>')
+def serve_services_files(filename):
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'services_files'), filename)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@app.route('/qr_files/<path:filename>')
+def serve_qr_files(filename):
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'qr_files'), filename)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@app.route('/showqr_files/<path:filename>')
+def serve_showqr_files(filename):
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'showqr_files'), filename)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@app.route('/scanqr_files/<path:filename>')
+def serve_scanqr_files(filename):
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'scanqr_files'), filename)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+# =============================================================================
 # SECURITY: Removed /api/seed endpoint - no hardcoded credentials
 # =============================================================================
 
