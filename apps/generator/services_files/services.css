@@ -1,22 +1,89 @@
+.logo_container {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
 
-.title{
+.logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    display: block;
+}
+
+.logo_container .title {
+    font-weight: 600;
+    font-size: 24px;
+    color: white;
+    margin: 0;
+}
+
+.services_container {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+    background: #1f2326;
+    border-radius: 15px;
+}
+
+.services_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.services_title .title {
     font-weight: 600;
     font-size: 19px;
-    margin-top: auto;
-    margin-bottom: auto;
-    height: max-content;
     color: white;
+    margin: 0;
 }
 
-.services_action{
-    margin-top: 150px;
-    display: grid;
-    grid-template-columns: repeat(2, 50%);
-    width: 100%;
-    height: max-content;
+.main_button {
+    color: #4aa2fc;
+    font-size: 16px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px 10px;
 }
 
-.services_action .main_button{
-    margin-right: 0;
-    margin-left: auto;
+.service {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #2a2d31;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.service:last-child {
+    border-bottom: none;
+}
+
+.service:hover {
+    background: #2a2d31;
+}
+
+.service_icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.service_text {
+    flex: 1;
+    color: white;
+    font-size: 16px;
+    margin: 0;
+}
+
+.right_arrow {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+    flex-shrink: 0;
 }
