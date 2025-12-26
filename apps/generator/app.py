@@ -28,6 +28,10 @@ limiter = Limiter(key_func=get_remote_address, app=app, default_limits=["100 per
 @app.after_request
 def headers(r):
     r.headers['X-Content-Type-Options'] = 'nosniff'
+    # Allow JavaScript and CSS to load
+    r.headers['Access-Control-Allow-Origin'] = '*'
+    r.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    r.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return r
 
 def sanitize(v, m=255):
