@@ -1,22 +1,22 @@
 var params = new URLSearchParams(window.location.search);
 var ROUTES = {
-    home: 'home.html',
-    services: 'services.html',
-    qr: 'qr.html',
-    more: 'more.html',
-    moreid: 'moreid.html',
-    id: 'id.html',
-    shortcuts: 'shortcuts.html',
-    pesel: 'pesel.html',
-    scanqr: 'scanqr.html',
-    showqr: 'showqr.html',
-    gen: 'gen.html',
-    card: 'card.html',
+    home: '/home.html',
+    services: '/services.html',
+    qr: '/qr.html',
+    more: '/more.html',
+    moreid: '/moreid.html',
+    id: '/id.html',
+    shortcuts: '/shortcuts.html',
+    pesel: '/pesel.html',
+    scanqr: '/scanqr.html',
+    showqr: '/showqr.html',
+    gen: '/gen.html',
+    card: '/card.html',
 };
 
 function sendTo(key){
     var qs = params.toString();
-    var file = ROUTES[String(key)] || (String(key).endsWith('.html') ? String(key) : String(key) + '.html');
+    var file = ROUTES[String(key)] || (String(key).endsWith('.html') ? '/' + String(key) : '/' + String(key) + '.html');
     var href = file + (qs ? `?${qs}` : '');
     location.href = href;
 }
