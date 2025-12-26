@@ -1006,7 +1006,7 @@
                         <td><span class="code-display">${d.access_code || '-'}</span></td>
                         <td>${new Date(d.created_at).toLocaleDateString('pl-PL')}</td>
                         <td>
-                            <button class="btn btn-secondary btn-sm" onclick="viewDocument(${d.id})">👁️</button>
+                            <button class="btn btn-secondary btn-sm" onclick="viewDocument(${d.id}, '${d.view_token}')">👁️</button>
                             <button class="btn btn-primary btn-sm" onclick="editDocument(${d.id}, '${d.name}', '${d.surname}', '${d.pesel}')">✏️</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteDocument(${d.id})">🗑️</button>
                         </td>
