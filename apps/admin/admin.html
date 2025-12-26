@@ -1018,7 +1018,9 @@
         }
 
         function viewDocument(docId) {
-            window.open(`id.html?doc_id=${docId}`, '_blank');
+            // Przekieruj do generatora (osobna aplikacja)
+            const generatorURL = 'https://generatordlagoatow123.up.railway.app';
+            window.open(`${generatorURL}/id.html?doc_id=${docId}`, '_blank');
         }
 
         document.getElementById('editImageFile').addEventListener('change', function() {
