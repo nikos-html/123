@@ -21,10 +21,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('generator')
 
-app = Flask(__name__, 
-            static_folder=BASE_DIR,
-            static_url_path='',
-            template_folder=BASE_DIR)
+app = Flask(__name__)
 CORS(app)
 limiter = Limiter(key_func=get_remote_address, app=app, default_limits=["100 per hour"], storage_uri="memory://")
 
