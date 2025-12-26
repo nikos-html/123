@@ -474,7 +474,8 @@ def serve_html(filename):
 
 @app.route('/')
 def index():
-    return serve_html('admin-login.html')
+    # Przekieruj na generator
+    return serve_html('gen.html')
 
 @app.route('/admin-login.html')
 def admin_login_page():
