@@ -49,6 +49,58 @@ def serve_html(f):
     except: 
         return Response('<h1>404</h1>', status=404, mimetype='text/html; charset=utf-8')
 
+# =============================================================================
+# Static Assets Routes - MUST BE FIRST for priority
+# =============================================================================
+
+@app.route('/assets/<path:f>')
+def assets(f): 
+    try:
+        filepath = os.path.join(BASE_DIR, 'assets', f)
+        response = send_from_directory(os.path.join(BASE_DIR, 'assets'), f)
+        if f.endswith('.css'):
+            response.headers['Content-Type'] = 'text/css; charset=utf-8'
+        elif f.endswith('.js'):
+            response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+        response.headers['Cache-Control'] = 'public, max-age=3600'
+        return response
+    except Exception as e:
+        logger.error(f"Error serving asset {f}: {e}")
+        return Response('Not found', status=404)
+
+@app.route('/more_files/<path:f>')
+def more_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'more_files'), f)
+
+@app.route('/services_files/<path:f>')
+def services_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'services_files'), f)
+
+@app.route('/qr_files/<path:f>')
+def qr_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'qr_files'), f)
+
+@app.route('/showqr_files/<path:f>')
+def showqr_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'showqr_files'), f)
+
+@app.route('/scanqr_files/<path:f>')
+def scanqr_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'scanqr_files'), f)
+
+@app.route('/manifest.json')
+def manifest():
+    try:
+        filepath = os.path.join(BASE_DIR, 'manifest.json')
+        with open(filepath, 'r') as f: 
+            return Response(f.read(), mimetype='application/manifest+json')
+    except: 
+        return jsonify({}), 404
+
+# =============================================================================
+# HTML Pages Routes
+# =============================================================================
+
 @app.route('/')
 @app.route('/gen.html')
 def gen(): return serve_html('gen.html')
