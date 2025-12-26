@@ -455,13 +455,14 @@ def init_db():
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
     try:
-        return send_from_directory('assets', filename)
+        return send_from_directory(os.path.join(BASE_DIR, 'assets'), filename)
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
 def serve_html(filename):
     try:
-        with open(filename, 'r', encoding='utf-8') as f:
+        filepath = os.path.join(BASE_DIR, filename)
+        with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
         response = Response(content, mimetype='text/html; charset=utf-8')
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
