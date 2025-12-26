@@ -103,7 +103,7 @@ def manifest():
 
 @app.route('/assets/<path:f>')
 def assets(f): 
-    response = send_from_directory('assets', f)
+    response = send_from_directory(os.path.join(BASE_DIR, 'assets'), f)
     if f.endswith('.css'):
         response.headers['Content-Type'] = 'text/css; charset=utf-8'
     elif f.endswith('.js'):
@@ -112,16 +112,20 @@ def assets(f):
     return response
 
 @app.route('/more_files/<path:f>')
-def more_files(f): return send_from_directory('more_files', f)
+def more_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'more_files'), f)
 
 @app.route('/services_files/<path:f>')
-def services_files(f): return send_from_directory('services_files', f)
+def services_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'services_files'), f)
 
 @app.route('/qr_files/<path:f>')
-def qr_files(f): return send_from_directory('qr_files', f)
+def qr_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'qr_files'), f)
 
 @app.route('/showqr_files/<path:f>')
-def showqr_files(f): return send_from_directory('showqr_files', f)
+def showqr_files(f): 
+    return send_from_directory(os.path.join(BASE_DIR, 'showqr_files'), f)
 
 @app.route('/scanqr_files/<path:f>')
 def scanqr_files(f): return send_from_directory('scanqr_files', f)
