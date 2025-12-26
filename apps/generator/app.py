@@ -46,7 +46,8 @@ def verify_turnstile(t):
 
 def serve_html(f):
     try:
-        with open(f, 'r', encoding='utf-8') as file: 
+        filepath = os.path.join(BASE_DIR, f)
+        with open(filepath, 'r', encoding='utf-8') as file: 
             return Response(file.read(), mimetype='text/html; charset=utf-8')
     except: 
         return Response('<h1>404</h1>', status=404, mimetype='text/html; charset=utf-8')
