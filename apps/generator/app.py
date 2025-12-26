@@ -148,6 +148,72 @@ def shortcuts():
 # API Routes (simplified - no auth needed for generator)
 # =============================================================================
 
+# =============================================================================
+# API Routes - Document validation with tokens
+# =============================================================================
+
+@app.route('/api/documents/<int:document_id>/check', methods=['GET'])
+def check_document_exists(document_id):
+    """
+    Check if document exists with valid token
+    """
+    view_token = request.args.get('token')
+    
+    if document_id <= 0:
+        return jsonify({'exists': False}), 200
+    
+    try:
+        conn = get_db()
+        cur = conn.cursor(row_factory=dict_row)
+        
+        if view_token:
+            cur.execute('SELECT id FROM generated_documents WHERE id = %s AND view_token = %s', (document_id, view_token))
+        else:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Token required'}), 403
+        
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        return jsonify({'exists': result is not None}), 200
+        
+    except Exception as e:
+        logger.error(f"Document check error: {e}")
+        return jsonify({'exists': False}), 200
+
+@app.route('/api/documents/<int:document_id>', methods=['GET'])
+def get_document(document_id):
+    """
+    Get document data with valid token
+    """
+    view_token = request.args.get('token')
+    
+    try:
+        conn = get_db()
+        cur = conn.cursor(row_factory=dict_row)
+        
+        if view_token:
+            cur.execute('SELECT data FROM generated_documents WHERE id = %s AND view_token = %s', (document_id, view_token))
+        else:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Token required'}), 403
+        
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if result:
+            return jsonify(result['data']), 200
+        else:
+            return jsonify({'error': 'Document not found'}), 404
+            
+    except Exception as e:
+        logger.error(f"Get document error: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 @app.route('/api/auth/validate-code', methods=['POST'])
 @limiter.limit("3 per 15 minutes")
 def validate_code():
