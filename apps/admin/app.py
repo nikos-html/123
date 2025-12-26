@@ -94,7 +94,13 @@ def admin_page(): return serve_html('admin.html')
 def block(): return Response('<h1>404</h1>', status=404)
 
 @app.route('/assets/<path:f>')
-def assets(f): return send_from_directory('assets', f)
+def assets(f): 
+    response = send_from_directory('assets', f)
+    if f.endswith('.css'):
+        response.headers['Content-Type'] = 'text/css; charset=utf-8'
+    elif f.endswith('.js'):
+        response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+    return response
 
 @app.route('/api/auth/admin-login', methods=['POST'])
 @limiter.limit("3 per 15 minutes")
