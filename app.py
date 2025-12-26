@@ -79,7 +79,13 @@ logger = logging.getLogger('security')
 # =============================================================================
 # Flask App Setup
 # =============================================================================
-app = Flask(__name__, static_folder='.', static_url_path='')
+# Get the directory where this script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__, 
+            static_folder=BASE_DIR,
+            static_url_path='',
+            template_folder=BASE_DIR)
 
 # CORS - Allow all origins for Replit preview
 CORS(app, origins="*", supports_credentials=True)
