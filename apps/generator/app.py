@@ -95,7 +95,14 @@ def manifest():
     except: return jsonify({}), 404
 
 @app.route('/assets/<path:f>')
-def assets(f): return send_from_directory('assets', f)
+def assets(f): 
+    response = send_from_directory('assets', f)
+    if f.endswith('.css'):
+        response.headers['Content-Type'] = 'text/css; charset=utf-8'
+    elif f.endswith('.js'):
+        response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+    response.headers['Cache-Control'] = 'public, max-age=3600'
+    return response
 
 @app.route('/more_files/<path:f>')
 def more_files(f): return send_from_directory('more_files', f)
