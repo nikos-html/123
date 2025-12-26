@@ -146,9 +146,6 @@ def block(): return Response('<h1>404</h1>', status=404)
 
 # API Routes below...
 
-@app.route('/scanqr_files/<path:f>')
-def scanqr_files(f): return send_from_directory('scanqr_files', f)
-
 @app.route('/api/auth/validate-code', methods=['POST'])
 @limiter.limit("3 per 15 minutes")
 def validate_code():
