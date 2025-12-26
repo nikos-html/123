@@ -98,8 +98,11 @@ def block(): return Response('<h1>404</h1>', status=404)
 @app.route('/manifest.json')
 def manifest():
     try:
-        with open('manifest.json', 'r') as f: return Response(f.read(), mimetype='application/manifest+json')
-    except: return jsonify({}), 404
+        filepath = os.path.join(BASE_DIR, 'manifest.json')
+        with open(filepath, 'r') as f: 
+            return Response(f.read(), mimetype='application/manifest+json')
+    except: 
+        return jsonify({}), 404
 
 @app.route('/assets/<path:f>')
 def assets(f): 
