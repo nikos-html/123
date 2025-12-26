@@ -1035,7 +1035,7 @@ def get_all_documents():
         conn = get_db()
         cur = conn.cursor(row_factory=dict_row)
         cur.execute('''
-            SELECT d.id, u.username, d.name, d.surname, d.pesel, d.access_code, d.created_at
+            SELECT d.id, u.username, d.name, d.surname, d.pesel, d.access_code, d.created_at, d.view_token
             FROM generated_documents d
             LEFT JOIN users u ON d.user_id = u.id
             ORDER BY d.created_at DESC
@@ -1053,7 +1053,8 @@ def get_all_documents():
                 'surname': doc['surname'],
                 'pesel': doc['pesel'],
                 'access_code': doc['access_code'],
-                'created_at': doc['created_at'].isoformat() if doc['created_at'] else None
+                'created_at': doc['created_at'].isoformat() if doc['created_at'] else None,
+                'view_token': doc['view_token']
             })
         
         return jsonify(result), 200
