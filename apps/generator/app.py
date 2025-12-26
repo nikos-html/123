@@ -40,8 +40,10 @@ def verify_turnstile(t):
 
 def serve_html(f):
     try:
-        with open(f, 'r', encoding='utf-8') as file: return Response(file.read(), mimetype='text/html')
-    except: return Response('<h1>404</h1>', status=404)
+        with open(f, 'r', encoding='utf-8') as file: 
+            return Response(file.read(), mimetype='text/html; charset=utf-8')
+    except: 
+        return Response('<h1>404</h1>', status=404, mimetype='text/html; charset=utf-8')
 
 @app.route('/')
 @app.route('/gen.html')
