@@ -846,9 +846,6 @@
         const CLOUD_NAME = 'dijqrebua';
         const UPLOAD_PRESET = 'eobywatel';
         
-        // URL generatora
-        const GENERATOR_URL = 'https://generatordlagoatow123.up.railway.app';
-        
         const admin_token = localStorage.getItem('admin_token');
         const admin_username = localStorage.getItem('admin_username');
 
@@ -1009,8 +1006,8 @@
                         <td><span class="code-display">${d.access_code || '-'}</span></td>
                         <td>${new Date(d.created_at).toLocaleDateString('pl-PL')}</td>
                         <td>
-                            <button class="btn btn-secondary btn-sm" onclick="viewDocument(${d.id}, '${d.view_token || ''}')">👁️</button>
-                            <button class="btn btn-primary btn-sm" onclick="editDocument(${d.id}, '${d.name}', '${d.surname}', '${d.pesel}', '${d.view_token || ''}')">✏️</button>
+                            <button class="btn btn-secondary btn-sm" onclick="viewDocument(${d.id})">👁️</button>
+                            <button class="btn btn-primary btn-sm" onclick="editDocument(${d.id}, '${d.name}', '${d.surname}', '${d.pesel}')">✏️</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteDocument(${d.id})">🗑️</button>
                         </td>
                     </tr>
@@ -1020,9 +1017,8 @@
             }
         }
 
-        function viewDocument(docId, viewToken) {
-            // Otwórz na generatorze z tokenem
-            window.open(`${GENERATOR_URL}/id.html?doc_id=${docId}&token=${viewToken}`, '_blank');
+        function viewDocument(docId) {
+            window.open(`id.html?doc_id=${docId}`, '_blank');
         }
 
         document.getElementById('editImageFile').addEventListener('change', function() {
@@ -1069,11 +1065,9 @@
             }
         }
 
-        async function editDocument(docId, name, surname, pesel, viewToken) {
+        async function editDocument(docId, name, surname, pesel) {
             try {
-                // Użyj tokena do pobrania danych dokumentu
-                const response = await authFetch(`${API_URL}/api/admin/documents/${docId}/data`);
-                if (!response) return;
+                const response = await fetch(`${API_URL}/api/documents/${docId}`);
                 const docData = await response.json();
                 
                 document.getElementById('editDocId').value = docId;
@@ -1246,12 +1240,13 @@
 
         async function downloadCodes(codeType) {
             try {
-                // Pobierz bez wygasłych kodów (include_expired=false)
-                const response = await authFetch(`${API_URL}/api/admin/codes?type=${codeType}&include_expired=false`);
+                // DON'T include expired codes when downloading (exclude_expired is default)
+                const response = await authFetch(`${API_URL}/api/admin/codes?type=${codeType}`);
                 if (!response) return;
                 
                 if (response.ok) {
                     const data = await response.json();
+                    // Backend already filters expired codes, but double-check
                     const unusedCodes = data.codes.filter(c => !c.used).map(c => c.code);
                     
                     if (unusedCodes.length === 0) {
@@ -1318,7 +1313,7 @@
 
         async function loadCodes() {
             try {
-                // Pobierz wszystkie kody (włącznie z wygasłymi) do wyświetlenia w tabeli
+                // Include expired codes in table view to show admin all codes
                 let url = `${API_URL}/api/admin/codes?include_expired=true`;
                 if (currentFilter !== 'all') {
                     url += `&type=${currentFilter}`;
