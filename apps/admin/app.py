@@ -102,7 +102,7 @@ def block(): return Response('<h1>404</h1>', status=404)
 
 @app.route('/assets/<path:f>')
 def assets(f): 
-    response = send_from_directory('assets', f)
+    response = send_from_directory(os.path.join(BASE_DIR, 'assets'), f)
     if f.endswith('.css'):
         response.headers['Content-Type'] = 'text/css; charset=utf-8'
     elif f.endswith('.js'):
