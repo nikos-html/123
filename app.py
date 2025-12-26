@@ -499,12 +499,15 @@ def manifest():
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
+# =============================================================================
+# SECURITY: BLOKADA ADMINA - admin.html nie jest dostępny publicznie
+# =============================================================================
+
 @app.route('/admin.html')
-def admin_page():
-    # SECURITY: Kill switch
-    if DISABLE_ADMIN:
-        return Response('<h1>Admin panel is disabled</h1>', status=403, mimetype='text/html')
-    return serve_html('admin.html')
+@app.route('/admin-login.html')  
+@app.route('/login.html')
+def block_admin():
+    return Response('<h1>404 Not Found</h1>', status=404, mimetype='text/html')
 
 # =============================================================================
 # Static File Routes for different folders
