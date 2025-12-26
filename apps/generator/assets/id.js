@@ -66,7 +66,7 @@ function toHome(){
         location.href = url;
     } else {
         // W przeciwnym razie użyj starych parametrów
-        location.href = 'home.html?' + params.toString();
+        location.href = '/home.html?' + params.toString();
     }
 }
 
