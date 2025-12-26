@@ -476,7 +476,6 @@ def serve_html(filename):
 def index():
     return serve_html('admin-login.html')
 
-@app.route('/admin-login.html')
 def admin_login_page():
     return serve_html('admin-login.html')
 
@@ -499,7 +498,6 @@ def manifest():
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
-@app.route('/admin.html')
 def admin_page():
     # SECURITY: Kill switch
     if DISABLE_ADMIN:
@@ -678,7 +676,6 @@ def login():
         logger.error(f"Login error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/auth/admin-login', methods=['POST'])
 @limiter.limit("3 per 15 minutes")  # SECURITY: Aggressive rate limit for admin
 def admin_login():
     """SECURITY: Dedicated admin login endpoint"""
@@ -981,7 +978,6 @@ def get_document(document_id):
 # SECURITY: Admin Routes - Protected with JWT
 # =============================================================================
 
-@app.route('/api/admin/users', methods=['GET'])
 @require_admin
 def get_users():
     try:
@@ -1008,7 +1004,6 @@ def get_users():
         logger.error(f"Admin get users error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/users/<int:user_id>/access', methods=['PUT'])
 @require_admin
 def update_access(user_id):
     data = request.get_json()
@@ -1031,7 +1026,6 @@ def update_access(user_id):
         logger.error(f"Admin update access error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/documents', methods=['GET'])
 @require_admin
 def get_all_documents():
     try:
@@ -1064,7 +1058,6 @@ def get_all_documents():
         logger.error(f"Admin get documents error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/documents/<int:document_id>', methods=['PUT'])
 @require_admin
 def update_document(document_id):
     data = request.get_json()
@@ -1115,7 +1108,6 @@ def update_document(document_id):
         logger.error(f"Admin update document error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/documents/<int:document_id>', methods=['DELETE'])
 @require_admin
 def delete_document(document_id):
     try:
@@ -1136,7 +1128,6 @@ def delete_document(document_id):
 # SECURITY: One-time code generation - Admin only
 # =============================================================================
 
-@app.route('/api/admin/generate-codes', methods=['POST'])
 @require_admin
 def generate_codes():
     try:
@@ -1192,7 +1183,6 @@ def generate_codes():
         logger.error(f"Code generation error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/codes', methods=['GET'])
 @require_admin
 def get_codes():
     try:
@@ -1240,7 +1230,6 @@ def get_codes():
         return jsonify({'error': 'Internal server error'}), 500
 
 # SECURITY: Removed public /clear-codes endpoint - admin only via API
-@app.route('/api/admin/clear-codes', methods=['DELETE'])
 @require_admin
 def clear_codes():
     """SECURITY: Admin-only endpoint to clear codes"""
@@ -1259,7 +1248,6 @@ def clear_codes():
         logger.error(f"Clear codes error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/delete-expired-codes', methods=['DELETE'])
 @require_admin
 def delete_expired_codes():
     """SECURITY: Admin-only endpoint to delete expired codes"""
@@ -1407,7 +1395,6 @@ def internal_error(e):
 # SECURITY: PANIC MODE - Emergency data deletion
 # =============================================================================
 
-@app.route('/api/admin/panic', methods=['POST'])
 @require_admin
 def panic_delete_all():
     """
@@ -1459,7 +1446,6 @@ def panic_delete_all():
         logger.error(f"PANIC delete error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/admin/delete-old', methods=['POST'])
 @require_admin
 def delete_old_documents():
     """SECURITY: Delete documents older than X hours"""
