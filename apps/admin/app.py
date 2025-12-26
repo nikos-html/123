@@ -17,10 +17,16 @@ load_dotenv()
 JWT_SECRET = os.environ.get('JWT_SECRET', secrets.token_hex(32))
 ACCESS_CODE_TTL_HOURS = int(os.environ.get('ACCESS_CODE_TTL_HOURS', '72'))
 
+# Get the directory where this script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('admin')
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__, 
+            static_folder=BASE_DIR,
+            static_url_path='',
+            template_folder=BASE_DIR)
 CORS(app)
 limiter = Limiter(key_func=get_remote_address, app=app, default_limits=["100 per hour"], storage_uri="memory://")
 
