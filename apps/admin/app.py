@@ -484,9 +484,6 @@ def admin_login_page():
 def login_page():
     return serve_html('login.html')
 
-@app.route('/gen.html')
-def gen_page():
-    return serve_html('gen.html')
 
 @app.route('/manifest.json')
 def manifest():
